@@ -1,0 +1,19 @@
+<section class="container">
+	<menu class="pull-right controls">
+		<li><a onclick="PLAYER.prev()" class="disabled">{{i 'fast-backward'}}</a></li>
+		<li><a onclick="PLAYER.toggle()">{{i 'play'}}</a></li>
+		<li><a onclick="PLAYER.fav()">{{i 'heart'}}</a></li>
+		<li><a onclick="PLAYER.next()">{{i 'fast-forward'}}</a></li>
+	</menu>
+	<div class="page-header noborder">
+		<h1>
+			<div class="slider">
+				<div></div><span></span>
+			</div>
+			<span class="title">{{track.artist.name}} - {{track.name}}</span><small class="times">{{track.formattedDuration}}</small>
+		</h1>
+	</div>
+	<div class="player">
+		<div><div></div></div>
+	</div>
+</section>

@@ -1,0 +1,43 @@
+<section class="container">
+	<div class="page-header">
+		{{#empty friends}}{{else}}
+			<div class="pull-right invite">
+				<button class="btn btn-default">{{i 'send'}} &nbsp;{{L 'inviteThem'}}</button>
+			</div>
+		{{/empty}}
+		<h1>{{L 'friends'}}</h1>
+	</div>
+	<div class="panel panel-default friends">
+		<div class="panel-body">
+			{{#empty friends}}
+				<h1 class="text-center text-muted">
+					{{L 'emptyFriends'}}
+				</h1>
+				<p class="text-center invite">
+					<button class="btn btn-default">{{i 'send'}} &nbsp;{{L 'inviteThem'}}</button>
+				</p>
+			{{else}}
+				<table class="table">
+					<tbody>
+						{{#each friends}}
+							<tr>
+								<td>
+									<a href="#player?track={{mbid}}" onclick="ROUTER.link(event)">
+										<img class="img-circle user" src="http://graph.facebook.com/{{user.id}}/picture">
+									</a>
+								</td>
+								<td>
+									<a href="#player?track={{mbid}}" onclick="ROUTER.link(event)">
+										<div class="text-muted pull-right">{{formattedDate}}</div>
+										<h4><span class="text-muted">{{user.name}}</span> &nbsp;{{i 'heart'}}&nbsp; {{name}}</h4>
+										{{i 'play-circle'}} &nbsp;{{artist.name}} - {{name}} <small>({{formattedDuration}})</small>
+									</a>
+								</td>
+							</tr>
+						{{/each}}
+					</tbody>
+				</table>
+			{{/empty}}
+		</div>
+	</div>
+</section>

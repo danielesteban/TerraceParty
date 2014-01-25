@@ -1,0 +1,25 @@
+<section class="container">
+	<div class="page-header">
+		<div class="pull-right">
+			<a href="#player?fav=1" class="btn btn-default" onclick="ROUTER.link(event)">{{i 'play'}} &nbsp;{{L 'playAll'}}</a>
+		</div>
+		<h1>{{L 'favorites'}}</h1>
+	</div>
+	<div class="panel panel-default favorites">
+		<div class="panel-body">
+			<ul class="nav nav-pills nav-stacked">
+				{{#each tracks}}
+					<li>
+						<a href="#player?track={{mbid}}" onclick="ROUTER.link(event)">
+							<span class="pull-right">{{formattedDuration}}</span>
+							{{i 'play-circle'}} &nbsp;{{artist.name}} - {{name}}
+						</a>
+					</li>
+				{{/each}}
+			</ul>
+			{{#empty tracks}}
+				<h1 class="text-center text-muted">{{L 'emptyFavorites'}}</h1>
+			{{/empty}}
+		</div>
+	</div>
+</section>

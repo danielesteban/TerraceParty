@@ -1,0 +1,28 @@
+<section class="container">
+	<div class="search">
+		<form class="row">
+			<div class="col-xs-8 col-xs-offset-2">
+				<div class="input-group input-group-lg autofill">
+					<input type="text" class="form-control" placeholder="{{L 'typeSearch'}}" name="q" autocomplete="off">
+					<div class="results">
+						<a class="close">&times;</a>
+						<ul></ul>
+					</div>
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="submit">{{i 'search'}}</button>
+					</span>
+				</div>
+			</div>
+			<div class="col-xs-8 col-xs-offset-2">
+				<menu class="tags">
+					{{#each tags}}
+						<li>{{a name 'player' params 'badge'}}</li>
+					{{/each}}
+				</menu>
+			</div>
+		</form>
+	</div>
+	<a class="forkme" href="https://github.com/danielesteban/TerraceParty" target="_blank">
+		<img src="static/img/forkme.png" alt="Fork me on GitHub">
+	</a>
+</section>

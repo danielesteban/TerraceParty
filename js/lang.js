@@ -1,0 +1,42 @@
+LANG = {
+	en : {
+		typeSearch : 'Type a genre, artist name or song...',
+		noResults : 'I didn\'t find shit with that query...',
+		genres : 'Genres',
+		artists : 'Artists',
+		tracks : 'Tracks',
+		home : 'Home',
+		search : 'Search',
+		friends : 'Friends',
+		favorites : 'Favorites',
+		playAll : 'Play all',
+		random : 'Random session',
+		login : 'Login',
+		logout : 'Logout',
+		emptyFavorites : 'You haven\'t add anything to your favorites',
+		emptyFriends : 'Your friends didn\'t fav anything this week',
+		inviteThem : 'Invite them to try TerraceParty!',
+		underAGPL : 'Under an AGPL license',
+		locale : 'en_US'
+	},
+	es : {
+		typeSearch : 'Teclea un género, nombre de artista o canción...',
+		noResults : 'No encontré mierda con esa query...',
+		genres : 'Géneros',
+		artists : 'Artistas',
+		tracks : 'Canciones',
+		home : 'Inicio',
+		search : 'Búsqueda',
+		friends : 'Amigos',
+		favorites : 'Favoritas',
+		playAll : 'Reproducir todas',
+		random : 'Sesión aleatoria',
+		login : 'Entrar',
+		logout : 'Salir',
+		emptyFavorites : 'No has añadido nada a tus favoritas',
+		emptyFriends : 'Tus amigos no han añadido ningún favorito esta semana',
+		inviteThem : '¡Invítales a probar TerraceParty!',
+		underAGPL : 'Bajo una licencia AGPL',
+		locale : 'es_ES'
+	}
+};

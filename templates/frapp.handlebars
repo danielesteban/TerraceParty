@@ -1,0 +1,33 @@
+<section></section>
+<nav>
+	<li class="home">
+		<a href="#home" onclick="ROUTER.link(event)" title="{{L 'search'}}">
+			{{i 'search'}}
+		</a>
+	</li>
+	<li class="friends">
+		<a href="#friends" onclick="RPC.login(function() {ROUTER.link(event)});event.preventDefault()" title="{{L 'friends'}}">
+			{{i 'user'}}
+		</a>
+	</li>
+	<li class="fav">
+		<a href="#fav" onclick="RPC.login(function() {ROUTER.link(event)});event.preventDefault()" title="{{L 'favorites'}}">
+			{{i 'heart'}}
+		</a>
+	</li>
+	<li class="player">
+		<a href="#player" onclick="ROUTER.link(event)" title="{{L 'random'}}">
+			{{i 'play'}}{{i 'random'}}
+		</a>
+	</li>
+	<li class="login">
+		<a onclick="RPC.session ? RPC.logout() : RPC.login()" title="{{L 'login'}}">
+			{{i 'log-in'}}{{i 'log-out'}}
+		</a>
+	</li>
+</nav>
+<footer>
+	<div class="container text-muted">
+		<p class="pull-right"><small>TerraceParty v{{version}} &nbsp;|&nbsp; Daniel Esteban Nombela {{i 'copyright-mark'}} {{year}} &nbsp;|&nbsp; {{L 'underAGPL'}}</small></p>
+	</div>
+</footer>
