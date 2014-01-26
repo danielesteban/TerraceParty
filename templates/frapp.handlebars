@@ -5,6 +5,11 @@
 			{{i 'search'}}
 		</a>
 	</li>
+	<li class="map">
+		<a href="#map" onclick="ROUTER.link(event)" title="{{L 'mostListened'}}">
+			{{i 'map-marker'}}
+		</a>
+	</li>
 	<li class="friends">
 		<a href="#friends" onclick="RPC.login(function() {ROUTER.link(event)});event.preventDefault()" title="{{L 'friends'}}">
 			{{i 'user'}}

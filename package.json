@@ -1,6 +1,6 @@
 {
 	"name" : "TerraceParty",
-	"version" : "0.0.2",
+	"version" : "0.0.3",
 	"description" : "An opensource music discovery tool. Pick a genre, artist or track name and enjoy the sonic journey.",
 	"author" : "Daniel Esteban Nombela <dani@hellacoders.com>",
 	"repository" : {

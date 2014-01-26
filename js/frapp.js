@@ -197,6 +197,24 @@
 		});
 	};
 
+	LASTFM.prototype.getCountryTracks = function(country, callback) {
+		var self = this;
+		this.req('geo.getTopTracks', {
+			country : country
+		}, function(data) {
+			if(!data || !data.toptracks) return callback();
+			var tracks = [];
+			data = data.toptracks.track.length ? data.toptracks.track : [data.toptracks.track];
+			data.sort(function() {
+				return Math.round(Math.random()) - 0.5;
+			});
+			data.forEach(function(track) {
+				track.mbid && tracks.push(self.prepTrack(track));
+			});
+			callback(tracks);
+		});
+	};
+
 	LASTFM.prototype.getSimilarTrack = function(track, callback, exclude) {
 		var self = this,
 			process = function(data) {
@@ -686,6 +704,122 @@ function onYouTubeIframeAPIReady() {
 	window.PLAYER = new PLAYER();
 })(window);
 
+/* Map stuff */
+(function(window) {
+	var MAP = function() {
+		this.loaded = false;
+	};
+
+	MAP.prototype.load = function(callback) {
+		if(this.loaded) return callback && callback();
+		var self = this;
+		this.loadCallback = function() {
+			if(!window.COUNTRIES || !window.google || !window.google.maps || !window.google.maps.LatLng) return;
+			COUNTRIES.forEach(function(country) {
+				var bounds = new google.maps.LatLngBounds(),
+					paths = [];
+				
+				if(country.geometries) {
+					country.geometries.forEach(function(geometry) {
+						var p = [];
+						geometry.forEach(function(coords) {
+							coords = new google.maps.LatLng(coords[0], coords[1]);
+							p.push(coords);
+							bounds.extend(coords);
+						});
+						paths.push(p);
+					});
+					delete country.geometries;
+				} else {
+					country.geometry.forEach(function(coords) {
+						coords = new google.maps.LatLng(coords[0], coords[1]);
+						paths.push(coords);
+						bounds.extend(coords);
+					});
+					delete country.geometry;
+				}
+				country.polygon = new google.maps.Polygon({
+					paths : paths,
+					fillColor : '#fa8a12',
+					fillOpacity : 0,
+					strokeWeight : 0
+				});
+				google.maps.event.addListener(country.polygon, 'mouseover', function() {
+					this.setOptions({fillOpacity : 0.6});
+				});
+				google.maps.event.addListener(country.polygon, 'mouseout', function() {
+					this.setOptions({fillOpacity : 0});
+				});
+				google.maps.event.addListener(country.polygon, 'click', function() {
+					/* Load the player */
+					var hash = 'player?country=' + encodeURIComponent(country.name.toLowerCase());
+					history.pushState(null, null, '#' + hash);
+					ROUTER.update(hash);
+				});
+			});
+			self.loaded = true;
+			callback && callback();
+		};
+
+		/* Load countries polygons data */
+		$.ajax({
+			cache : true,
+			dataType : 'script',
+			url : 'static/js/countries.js',
+		}).done(this.loadCallback);
+
+		/* Load maps API */
+		$.ajax({
+			cache : true,
+			dataType : 'script',
+			url : 'http://maps.googleapis.com/maps/api/js?sensor=false&callback=MAP.loadCallback&language=' + L.locale,
+		});
+	};
+
+	MAP.prototype.draw = function() {
+		if(!this.loaded) return this.load(this.draw.bind(this));
+		var map = new google.maps.Map($('section .map')[0], {
+				center : new google.maps.LatLng(10, 0),
+				scrollwheel : false,
+				maxZoom : 7,
+				minZoom : 2,
+				zoom : 2,
+				mapTypeControl : false,
+				streetViewControl : false,
+				panControl : false,
+				zoomControlOptions: {
+					position : google.maps.ControlPosition.TOP_RIGHT
+				},
+				styles : [
+					{
+						stylers: [
+							{saturation: -100}		
+						]
+					},
+					{
+						featureType : 'poi.business',
+						stylers : [
+							{visibility: 'off'}
+						]
+					},
+					{
+						featureType : 'poi.attraction',
+						stylers : [
+							{visibility: 'off'}
+						]
+					}
+				]
+			});
+
+		COUNTRIES.forEach(function(country) {
+			country.polygon.setOptions({fillOpacity : 0});
+			country.polygon.setMap(map);
+		});
+	};
+
+	window.MAP = new MAP();
+})(window);
+
 /* Templates Logic */
 TEMPLATE = {
 	home : function(params, render) {
@@ -971,7 +1105,13 @@ TEMPLATE = {
 		if(params.artist) return LASTFM.getArtistTrack(params.artist, trackCb);
 		else if(params.track) return LASTFM.getTrack(params.track, trackCb);
 		else if(params.tag) LASTFM.getTagTrack(params.tag, trackCb);
-		else if(params.fav) {
+		else if(params.country) {
+			LASTFM.getCountryTracks(params.country, function(tracks) {
+				if(!tracks) return ROUTER.update('map');
+				trackCb(tracks[0]);
+				PLAYER.queue.tracks = tracks;
+			});
+		} else if(params.fav) {
 			RPC.getFav(function(tracks) {
 				if(!tracks) return ROUTER.update('fav');
 				trackCb(tracks[0]);
@@ -1001,6 +1141,17 @@ TEMPLATE = {
 			render({
 				tracks : tracks
 			});
+		});
+	},
+	map : function(params, render) {
+		MAP.load(function() {
+			render({});
+			MAP.draw();
+			ROUTER.onUnload = function() {
+				window.COUNTRIES && COUNTRIES.forEach(function(country) {
+					country.polygon.setMap(null);
+				});
+			};
 		});
 	}
 };
