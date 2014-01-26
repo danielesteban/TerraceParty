@@ -330,6 +330,7 @@
 						}
 					});
 				
+				delete PLAYER.loading;
 				PLAYER.current = {
 					track : track,
 					play : function() {
@@ -426,6 +427,7 @@ function onYouTubeIframeAPIReady() {
 					PLAYER.stateChange(state = PLAYER.states.paused);
 				},
 				onload : function(ok) {
+					delete PLAYER.loading;
 					if(!ok) {
 						cover && cover.remove();
 						sound.destruct();
@@ -501,6 +503,7 @@ function onYouTubeIframeAPIReady() {
 		var track = this.queue.tracks[index],
 			self = this;
 
+		this.loading = true;
 		RPC.isFav(track, function(fav) {
 			fav && $('menu.controls .glyphicon-heart').addClass('active');	
 		});
@@ -513,7 +516,10 @@ function onYouTubeIframeAPIReady() {
 		this.current && this.current.destroy();
 		delete this.current;
 		this.bestMatch(track, function(bestMatch) {
-			if(!bestMatch) return self.next();
+			if(!bestMatch) {
+				self.loading = false;
+				return self.next();
+			}
 			switch(bestMatch.provider) {
 				case 1: //youtube
 					YOUTUBE.player(track);
@@ -651,18 +657,18 @@ function onYouTubeIframeAPIReady() {
 
 	/* Controls */
 	PLAYER.prototype.prev = function() {
-		if(!this.current || this.queue.current === 0) return;
+		if(this.loading || this.queue.current === 0) return;
 		this.load(--this.queue.current);
 		this.queue.current === 0 && $('menu.controls .glyphicon-fast-backward').parent().addClass('disabled');
 	};
 
 	PLAYER.prototype.next = function(justQueue) {
-		if(!this.current) return;
+		if(this.loading) return;
 		var self = this,
 			queue = this.queue,
 			cb = function() {
 				if(justQueue) return;
-				Math.round(self.current.time() * 100 / self.current.duration()) >= 30 && ANALYTICS('send', 'event', 'Tracks', 'Play', self.current.track.mbid);
+				self.current && Math.round(self.current.time() * 100 / self.current.duration()) >= 30 && ANALYTICS('send', 'event', 'Tracks', 'Play', self.current.track.mbid);
 				self.load(++queue.current);
 				$('menu.controls .glyphicon-fast-backward').parent().removeClass('disabled');
 			};
